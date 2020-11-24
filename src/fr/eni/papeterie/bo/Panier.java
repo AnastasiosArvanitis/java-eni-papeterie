@@ -48,7 +48,7 @@ public class Panier {
 	@Override
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append("Panier: \n\n");
+		buffer.append("Panier: \n");
 		for (Ligne ligne : lignesPanier) {
 			if (ligne != null) {
 				buffer.append("ligne " + lignesPanier.indexOf(ligne) + ":\t");
@@ -63,18 +63,3 @@ public class Panier {
 	}
 	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

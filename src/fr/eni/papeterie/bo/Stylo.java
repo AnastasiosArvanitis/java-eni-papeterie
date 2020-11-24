@@ -31,7 +31,7 @@ public class Stylo extends Article {
 
 	@Override
 	public String toString() {
-		String s = String.format("%s Stylo [Couleur=%s]", super.toString(), getCouleur());
+		String s = String.format("%s Stylo Couleur: %s", super.toString(), getCouleur());
 
 		return s;
 	}

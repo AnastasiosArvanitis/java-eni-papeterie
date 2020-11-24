@@ -78,8 +78,8 @@ public abstract class Article {
 
 	@Override
 	public String toString() {
-		return "Article [idArticle=" + idArticle + ", reference=" + reference + ", marque=" + marque + ", designation="
-				+ designation + ", prixUnitaire=" + prixUnitaire + ", qteStock=" + qteStock + "]";
+		return "Article -> article ID: " + idArticle + ", reference: " + reference + ", marque: " + marque + ", designation: "
+				+ designation + ", prixUnitaire: " + prixUnitaire + ", qteStock: " + qteStock;
 	}
 	
 	

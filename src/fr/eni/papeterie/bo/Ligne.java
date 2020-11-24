@@ -33,7 +33,7 @@ public class Ligne {
 	@Override
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append("Ligne [ ");
+		buffer.append("Ligne ");
 		buffer.append(" quantite: ");
 		buffer.append(getQte());
 		buffer.append(", prix: ");

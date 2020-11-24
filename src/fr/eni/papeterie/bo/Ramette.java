@@ -35,9 +35,8 @@ public class Ramette extends Article {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append(super.toString());
 		buffer.append(" ");
-		buffer.append("Ramette [ grammage: ");
+		buffer.append("Ramette grammage: ");
 		buffer.append(getGrammage());
-		buffer.append(" ]");
 		return buffer.toString();
 	}
 	
