@@ -33,6 +33,7 @@ public class AppliTest {
 			articles.add(new Stylo(3, "Stypen", "PlumeS", "Stylo Plume Stypen", 5.5f, 20, "jaune"));
 			articles.add(new Stylo(4, "Waterman", "WOBGreen", "Waterman Orion Bille vert",(float)5.5, 20, "vert"));
 			articles.add(new Stylo(5, "Parker", "PlumeP", "Stylo Plume Parker", 5.5f, 5, "noir"));
+			articles.add(new Stylo(11, "Tom", "Crouz", "Top Gun", 10.10f, 1, "pink"));
 			
 			System.out.println("\nREM : Affichage du catalogue");
 			//on affiche la liste des articles
@@ -48,6 +49,20 @@ public class AppliTest {
 		//tester le Panier
 		//******************
 		Panier panier = new Panier();
+		Panier panier2 = new Panier();
+		//my Panier for testing
+		try {
+			panier2.addLigne(articles.get(0), 2);
+			panier2.addLigne(articles.get(1), 3);
+			panier2.addLigne(articles.get(2), 1);
+			panier2.addLigne(articles.get(5), 1);
+			System.out.println("-----------------------------My Panier-------------------");
+			System.out.println(panier2.toString());
+			System.out.println("__________________________________________________");
+		} catch (Exception e) {
+
+		}
+		
 		try {
 			panier.addLigne(articles.get(0), 2);
 			System.out.println("\nREM : Affichage de l'article de la premiere ligne du panier");
