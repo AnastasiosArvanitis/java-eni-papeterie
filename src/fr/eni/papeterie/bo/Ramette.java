@@ -32,7 +32,13 @@ public class Ramette extends Article {
 
 	@Override
 	public String toString() {
-		return "Ramette [grammage=" + grammage + "]";
+		StringBuffer buffer = new StringBuffer();
+		buffer.append(super.toString());
+		buffer.append(" ");
+		buffer.append("Ramette [ grammage: ");
+		buffer.append(getGrammage());
+		buffer.append(" ]");
+		return buffer.toString();
 	}
 	
 	

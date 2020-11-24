@@ -2,20 +2,20 @@ package fr.eni.papeterie.bo;
 
 public class Ligne {
 	
-	private int quantite;
-	private Article article;
+	protected int qte;
+	protected Article article;
 	
-	public Ligne(int quantite, Article article) {
-		this.quantite = quantite;
+	public Ligne(Article article, int qte) {
+		this.qte = qte;
 		this.article = article;
 	}
 
-	public int getQuantite() {
-		return quantite;
+	public int getQte() {
+		return qte;
 	}
 
-	public void setQuantite(int quantite) {
-		this.quantite = quantite;
+	public void setQte(int qte) {
+		this.qte = qte;
 	}
 
 	public Article getArticle() {
@@ -32,8 +32,20 @@ public class Ligne {
 
 	@Override
 	public String toString() {
-		return "Ligne [quantite=" + quantite + ", article=" + article + ", getQuantite()=" + getQuantite()
-				+ ", getArticle()=" + getArticle() + ", getPrix()=" + getPrix() + "]";
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("Ligne [ ");
+		buffer.append(" quantite: ");
+		buffer.append(getQte());
+		buffer.append(", prix: ");
+		buffer.append(getPrix());
+		buffer.append(", ");
+		if (article != null) {
+			buffer.append("article: ");
+			buffer.append(getArticle().toString());
+		}
+		
+		buffer.append(" ]");
+		return buffer.toString();
 	}
 	
 	
