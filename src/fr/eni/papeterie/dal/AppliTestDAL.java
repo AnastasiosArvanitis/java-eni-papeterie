@@ -8,11 +8,18 @@ import fr.eni.papeterie.bo.Stylo;
 import fr.eni.papeterie.dal.DALException;
 import fr.eni.papeterie.dal.jdbc.ArticleDAOJdbcImpl;
 
+/*
+* DIKO MOU
+* EDOOOOOOOOOOOO
+*
+* */
+
+
 public class AppliTestDAL {
 	
 	public static void main(String[] args) {
 		
-		ArticleDAOJdbcImpl articleDAO = new ArticleDAOJdbcImpl();
+		ArticleDAO articleDAO = DAOFactory.getArticleDAO();
 		
 		Article a1 = new Stylo( "Bic", "BBOrange","Bic bille Orange", 1.2f, 20, "bleu");
 		Article a2 = new Ramette(  "Clairef", "CRA4S", "Ramette A4 Sup", 9f, 20, 80);
@@ -22,16 +29,16 @@ public class AppliTestDAL {
 		
 		try {
 			//-----INSERT
-//			articleDAO.insert(a1);
-//			System.out.println("Article ajouté : " + a1.toString());
-//			articleDAO.insert(a2);
-//			System.out.println("Article ajouté : " + a2.toString());
-//			articleDAO.insert(a3);
-//			System.out.println("Article ajouté : " + a3.toString());
+			articleDAO.insert(a1);
+			System.out.println("Article ajouté : " + a1.toString());
+			articleDAO.insert(a2);
+			System.out.println("Article ajouté : " + a2.toString());
+			articleDAO.insert(a3);
+			System.out.println("Article ajouté : " + a3.toString());
 			
 			//-------SELECT
-//			Article a = articleDAO.selectById(a2.getIdArticle());
-//			System.out.println("\nSélection de l'article par id  : " + a.toString() );
+			Article a = articleDAO.selectById(a2.getIdArticle());
+			System.out.println("\nSélection de l'article par id  : " + a.toString() );
 			
 			
 			
@@ -39,25 +46,25 @@ public class AppliTestDAL {
 			List<Article> articles = articleDAO.selectAll();
 			System.out.println("\nSélection de tous les articles  : "  );
 			afficherArticles(articles);
-//			articleDAO.delete(4);
-//			articles = articleDAO.selectAll();
-//			afficherArticles(articles);
-			
+			articleDAO.delete(4);
+			articles = articleDAO.selectAll();
+			afficherArticles(articles);
+
 			//----------UPDATE
-//			System.out.println("\nModification d'un article  : " );
-//			System.out.println("Article avant modification : "  + a1.toString());
-//			((Stylo) a1).setCouleur("noir");
-//			((Stylo) a1).setDesignation("Bill noir perdoulas");
-//			((Stylo) a1).setReference("BB NOIR");
-//			articleDAO.update(a1);
-//			System.out.println("Article après modification  : " + a1.toString());
-//			
+			System.out.println("\nModification d'un article  : " );
+			System.out.println("Article avant modification : "  + a1.toString());
+			((Stylo) a1).setCouleur("noir");
+			((Stylo) a1).setDesignation("Bill noir perdoulas");
+			((Stylo) a1).setReference("BB NOIR");
+			articleDAO.update(a1);
+			System.out.println("Article après modification  : " + a1.toString());
+
 			//------DELETE
-//			System.out.println("\nSuppression de l'article  : " + a1.toString());
-//			articleDAO.delete(a1.getIdArticle());
-//			articles = articleDAO.selectAll();
-//			System.out.println("Liste des articles après suppression : "  );
-//			afficherArticles(articles);
+			System.out.println("\nSuppression de l'article  : " + a1.toString());
+			articleDAO.delete(a1.getIdArticle());
+			articles = articleDAO.selectAll();
+			System.out.println("Liste des articles après suppression : "  );
+			afficherArticles(articles);
 			System.out.println("-----------------------------------------");
 			
 		} catch (DALException e) {
@@ -72,7 +79,7 @@ public class AppliTestDAL {
 		StringBuffer sb = new StringBuffer();
 		for (Article art : articles) {
 			sb.append(art.toString());
-			sb.append("\n");
+			sb.append("\n\n");
 		}
 		System.out.println(sb.toString());
 	}

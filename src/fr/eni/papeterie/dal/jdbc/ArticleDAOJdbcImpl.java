@@ -14,9 +14,10 @@ import java.util.List;
 import fr.eni.papeterie.bo.Article;
 import fr.eni.papeterie.bo.Ramette;
 import fr.eni.papeterie.bo.Stylo;
+import fr.eni.papeterie.dal.ArticleDAO;
 import fr.eni.papeterie.dal.DALException;
 
-public class ArticleDAOJdbcImpl {
+public class ArticleDAOJdbcImpl implements ArticleDAO {
 	
 	private static final String TYPE_STYLO = "STYLO";
 	private static final String TYPE_RAMETTE = "RAMETTE";
@@ -35,9 +36,8 @@ public class ArticleDAOJdbcImpl {
 	private static final String sqlSelectByMotCle = "select reference, marque, designation, prixUnitaire, qteStock, grammage, couleur, type "
 			+ "from articles where marque like ? or designation like ?";
 	
-	private Connection connection;
-	
 	//-----------------LOAD THE DRIVER
+	/*private Connection connection;
 	static {
 		try {
 			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
@@ -49,10 +49,10 @@ public class ArticleDAOJdbcImpl {
 	//Constructor
 	public ArticleDAOJdbcImpl() {
 		
-	}
+	}*/
 
 	//-----------------ESTABLISE CONNECTION
-	public Connection getConnection() throws SQLException {
+	/*public Connection getConnection() throws SQLException {
 		if (connection == null) {
 			String urldb = "jdbc:sqlserver://localhost:1433;databaseName=PAPETERIE_DB";
 			connection = DriverManager.getConnection(urldb, "sa", "flox123");
@@ -71,7 +71,9 @@ public class ArticleDAOJdbcImpl {
 			connection = null;
 		}
 	}
-	
+	*/
+
+	@Override
 	public Article selectById(int id) throws DALException {
 		Connection cnx = null;
 		PreparedStatement rqt = null;
@@ -79,7 +81,7 @@ public class ArticleDAOJdbcImpl {
 		Article art = null;
 		
 		try {
-			cnx = getConnection();
+			cnx = JdbcTools.getConnection();
 			rqt = cnx.prepareStatement(sqlSelectById);
 			rqt.setInt(1, id);
 			rs = rqt.executeQuery();
@@ -102,17 +104,24 @@ public class ArticleDAOJdbcImpl {
 			throw new DALException("Select by id failed - id = " + id, e);
 		} finally {
 			try {
-				if (rqt != null) {
+				if (rs != null){
+					rs.close();
+				}
+				if (rqt != null){
 					rqt.close();
+				}
+				if(cnx!=null){
+					cnx.close();
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-			closeConnection();
+
 		}
 		return art;
 	}
-	
+
+	@Override
 	public List<Article> selectAll() throws DALException {
 		Connection cnx = null;
 		Statement rqt = null;
@@ -120,7 +129,7 @@ public class ArticleDAOJdbcImpl {
 		List<Article> liste = new ArrayList<Article>();
 		
 		try {
-			cnx = getConnection();
+			cnx = JdbcTools.getConnection();
 			rqt = cnx.createStatement();
 			rs = rqt.executeQuery(sqlSelectAll);
 			Article art = null;
@@ -128,13 +137,23 @@ public class ArticleDAOJdbcImpl {
 			while (rs.next()) {
 				if (TYPE_STYLO.equalsIgnoreCase(rs.getString("type").trim())) {
 					
-					art = new Stylo(rs.getInt("idArticle"), rs.getString("reference"), rs.getString("marque"), 
-							rs.getString("designation"), rs.getFloat("prixUnitaire"), rs.getInt("qteStock"), rs.getString("couleur"));
+					art = new Stylo(rs.getInt("idArticle"),
+							rs.getString("reference"),
+							rs.getString("marque"),
+							rs.getString("designation"),
+							rs.getFloat("prixUnitaire"),
+							rs.getInt("qteStock"),
+							rs.getString("couleur"));
 				}
 				if (TYPE_RAMETTE.equalsIgnoreCase(rs.getString("type").trim())) {
 					
-					art = new Ramette(rs.getInt("idArticle"), rs.getString("reference"), rs.getString("marque"), 
-							rs.getString("designation"), rs.getFloat("prixUnitaire"), rs.getInt("prixUnitaire"), rs.getInt("grammage"));
+					art = new Ramette(rs.getInt("idArticle"),
+							rs.getString("reference"),
+							rs.getString("marque"),
+							rs.getString("designation"),
+							rs.getFloat("prixUnitaire"),
+							rs.getInt("qteStock"),
+							rs.getInt("grammage"));
 				}
 				liste.add(art);
 			}
@@ -143,24 +162,28 @@ public class ArticleDAOJdbcImpl {
 			throw new DALException("select all failed - ", e);
 		}finally {
 			try {
-				
-				if (rqt != null) {
+				if (rs != null){
+					rs.close();
+				}
+				if (rqt != null){
 					rqt.close();
+				}
+				if(cnx!=null){
+					cnx.close();
 				}
 			} catch (SQLException e2) {
 				e2.printStackTrace();
 			}
-			closeConnection();
 		}
 		return liste;
 	}
-	
+	@Override
 	public void update(Article data) throws DALException {
 		Connection cnx = null;
 		PreparedStatement rqt = null;
 		
 		try {
-			cnx = getConnection();
+			cnx = JdbcTools.getConnection();
 			rqt = cnx.prepareStatement(sqlUpdate);
 			rqt.setString(1, data.getReference());
 			rqt.setString(2, data.getMarque());
@@ -188,22 +211,29 @@ public class ArticleDAOJdbcImpl {
 			
 		} finally {
 			try {
-				if (rqt != null) {
+				if (rqt != null){
 					rqt.close();
 				}
-				
+				if(cnx !=null){
+					cnx.close();
+				}
 			} catch (SQLException e2) {
 				e2.printStackTrace();
 			}
-			closeConnection();
 		}
 	}
-	
+
+	/**
+	 * @param data
+	 * @throws DALException
+	 */
+
+	@Override
 	public void insert(Article data) throws DALException {
 		Connection cnx = null;
 		PreparedStatement rqt = null;
 		try {
-			cnx = getConnection();
+			cnx = JdbcTools.getConnection();
 			rqt = cnx.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS);
 			rqt.setString(1, data.getReference());
 			rqt.setString(2, data.getMarque());
@@ -237,23 +267,25 @@ public class ArticleDAOJdbcImpl {
 			
 		} finally {
 			try {
-				if (rqt != null) {
+				if (rqt != null){
 					rqt.close();
+				}
+				if(cnx!=null){
+					cnx.close();
 				}
 			} catch (SQLException e2) {
 				throw new DALException("close failed - ", e2);
 			}
-			closeConnection();
 		}
 		
 	}
-	
+	@Override
 	public void delete(int id) throws DALException {
 		Connection cnx = null;
 		PreparedStatement rqt = null;
 		
 		try {
-			cnx = getConnection();
+			cnx = JdbcTools.getConnection();
 			rqt = cnx.prepareStatement(sqlDelete);
 			rqt.setInt(1, id);
 			rqt.executeUpdate();
@@ -265,13 +297,16 @@ public class ArticleDAOJdbcImpl {
 				if (rqt != null) {
 					rqt.close();
 				}
+				if(cnx!=null){
+					cnx.close();
+				}
 			} catch (SQLException e2) {
 				throw new DALException("close failed - " +e2);
 			}
-			closeConnection();
 		}
 	}
-	
+
+	@Override
 	public List<Article> selectByMarque(String marque) throws DALException {
 		Connection cnx = null;
 		PreparedStatement rqt = null;
@@ -279,7 +314,7 @@ public class ArticleDAOJdbcImpl {
 		List<Article> liste = new ArrayList<Article>();
 		
 		try {
-			cnx = getConnection();
+			cnx = JdbcTools.getConnection();
 			rqt = cnx.prepareStatement(sqlSelectByMarque);
 			rqt.setString(1, marque);
 			rs = rqt.executeQuery();
@@ -288,12 +323,22 @@ public class ArticleDAOJdbcImpl {
 			while(rs.next()) {
 				
 				if (TYPE_STYLO.equalsIgnoreCase(rs.getString("type").trim())) {
-					art = new Stylo(rs.getInt("idArticle"), rs.getString("reference"), rs.getString("marque"), 
-							rs.getString("designation"), rs.getFloat("prixUnitaire"), rs.getInt("qteStock"), rs.getString("couleur"));
+					art = new Stylo(rs.getInt("idArticle"),
+							rs.getString("reference"),
+							rs.getString("marque"),
+							rs.getString("designation"),
+							rs.getFloat("prixUnitaire"),
+							rs.getInt("qteStock"),
+							rs.getString("couleur"));
 				}
 				if (TYPE_RAMETTE.equalsIgnoreCase(rs.getString("type").trim())) {
-					art = new Ramette(rs.getInt("idArticle"), rs.getString("reference"), rs.getString("marque"), 
-							rs.getString("designation"), rs.getFloat("prixUnitaire"), rs.getInt("qteStock"), rs.getShort("grammage"));
+					art = new Ramette(rs.getInt("idArticle"),
+							rs.getString("reference"),
+							rs.getString("marque"),
+							rs.getString("designation"),
+							rs.getFloat("prixUnitaire"),
+							rs.getInt("qteStock"),
+							rs.getShort("grammage"));
 				}
 				liste.add(art);
 			}
@@ -302,17 +347,23 @@ public class ArticleDAOJdbcImpl {
 			throw new DALException("select by marque failed - " + e);
 		} finally {
 			try {
-				if (rqt != null) {
+				if (rs != null){
+					rs.close();
+				}
+				if (rqt != null){
 					rqt.close();
+				}
+				if(cnx!=null){
+					cnx.close();
 				}
 			} catch (SQLException e2) {
 				throw new DALException("Close failed - " +e2);
 			}
-			closeConnection();
 		}
 		return liste;
 	}
-	
+
+	@Override
 	public List<Article> selectByMotCle(String motCle) throws DALException {
 		Connection cnx = null;
 		PreparedStatement rqt = null;
@@ -320,7 +371,7 @@ public class ArticleDAOJdbcImpl {
 		List<Article> liste = new ArrayList<Article>();
 		
 		try {
-			cnx = getConnection();
+			cnx = JdbcTools.getConnection();
 			rqt = cnx.prepareStatement(sqlSelectByMotCle);
 			rqt.setString(1, motCle);
 			rs = rqt.executeQuery();
@@ -328,13 +379,23 @@ public class ArticleDAOJdbcImpl {
 			
 			while (rs.next()) {
 				if (TYPE_STYLO.equalsIgnoreCase(rs.getString("type").trim())) {
-					art = new Stylo(rs.getInt("idArticle"), rs.getString("reference"), rs.getString("marque"),
-							rs.getString("designation"), rs.getFloat("prixUnitaire"), rs.getInt("qteStock"), rs.getString("couleur"));
+					art = new Stylo(rs.getInt("idArticle"),
+							rs.getString("reference"),
+							rs.getString("marque"),
+							rs.getString("designation"),
+							rs.getFloat("prixUnitaire"),
+							rs.getInt("qteStock"),
+							rs.getString("couleur"));
 				}
 				
 				if (TYPE_RAMETTE.equalsIgnoreCase(rs.getString("type").trim())) {
-					art = new Ramette(rs.getInt("idArticle"), rs.getString("reference"), rs.getString("marque"), 
-							rs.getString("designation"), rs.getFloat("prixUnitaire"), rs.getInt("qteStock"), rs.getInt("grammage"));
+					art = new Ramette(rs.getInt("idArticle"),
+							rs.getString("reference"),
+							rs.getString("marque"),
+							rs.getString("designation"),
+							rs.getFloat("prixUnitaire"),
+							rs.getInt("qteStock"),
+							rs.getInt("grammage"));
 				}
 				liste.add(art);
 			}
@@ -343,14 +404,18 @@ public class ArticleDAOJdbcImpl {
 			throw new DALException("Select by mot cle failed - ", e);
 		} finally {
 			try {
-				if (rqt != null) {
+				if (rs != null){
+					rs.close();
+				}
+				if (rqt != null){
 					rqt.close();
 				}
-				
+				if(cnx!=null){
+					cnx.close();
+				}
 			} catch (Exception e2) {
 				throw new DALException("close failed", e2);
 			}
-			closeConnection();
 		}
 		return liste;
 	}
